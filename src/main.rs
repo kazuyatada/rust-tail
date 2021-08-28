@@ -1,24 +1,29 @@
 use std::collections::VecDeque;
-use std::env;
 use std::fs::File;
 use std::io::{prelude::*, BufReader};
+use std::path::PathBuf;
+use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+struct Opt {
+    #[structopt(short, default_value = "10")]
+    number: usize,
+    #[structopt(parse(from_os_str))]
+    file: PathBuf,
+}
 
 fn main() -> std::io::Result<()> {
-    let args: Vec<String> = env::args().collect();
+    let opt = Opt::from_args();
 
-    let filename = &args[1];
-
-    let file = File::open(filename)?;
+    let file = File::open(opt.file)?;
     let reader = BufReader::new(file);
 
-    let number_lines = 10;
-
-    let mut deque = VecDeque::with_capacity(number_lines + 1);
+    let mut deque = VecDeque::with_capacity(opt.number + 1);
 
     for line in reader.lines() {
         deque.push_back(line?);
 
-        if deque.len() > number_lines {
+        if deque.len() > opt.number {
             deque.pop_front();
         }
     }
