@@ -1,3 +1,4 @@
+use std::collections::VecDeque;
 use std::env;
 use std::fs::File;
 use std::io::{prelude::*, BufReader};
@@ -10,9 +11,21 @@ fn main() -> std::io::Result<()> {
     let file = File::open(filename)?;
     let reader = BufReader::new(file);
 
-    println!("File contents:");
+    let number_lines = 10;
+
+    let mut deque = VecDeque::with_capacity(number_lines + 1);
+
     for line in reader.lines() {
-        println!("{}", line?);
+        deque.push_back(line?);
+
+        if deque.len() > number_lines {
+            deque.pop_front();
+        }
     }
+
+    for line in deque.iter() {
+        println!("{}", line)
+    }
+
     Ok(())
 }
