@@ -14,7 +14,11 @@ struct Opt {
 
 fn main() -> std::io::Result<()> {
     let opt = Opt::from_args();
+    run(opt)?;
+    Ok(())
+}
 
+fn run(opt: Opt) -> std::io::Result<()> {
     let file = File::open(opt.file)?;
     let reader = BufReader::new(file);
 
