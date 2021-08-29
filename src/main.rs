@@ -2,6 +2,7 @@ use std::collections::VecDeque;
 use std::fs::File;
 use std::io::{prelude::*, BufReader};
 use std::path::PathBuf;
+use std::process;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -12,10 +13,12 @@ struct Opt {
     file: PathBuf,
 }
 
-fn main() -> std::io::Result<()> {
+fn main() {
     let opt = Opt::from_args();
-    run(opt)?;
-    Ok(())
+    if let Err(e) = run(opt) {
+        eprintln!("Application error: {}", e);
+        process::exit(1);
+    }
 }
 
 fn run(opt: Opt) -> std::io::Result<()> {
